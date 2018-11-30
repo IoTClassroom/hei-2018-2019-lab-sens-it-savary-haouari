@@ -48,7 +48,8 @@ int main()
     pending_interrupt = 0;
 
     /* End of initialization */
-
+	
+	int time=0;
     while (TRUE)
     {
         /* Execution loop */
@@ -104,6 +105,7 @@ int main()
 
             /* Set send flag */
             send = TRUE;
+            time++;
 
             /* Clear interrupt */
             pending_interrupt &= ~INTERRUPT_MASK_REED_SWITCH;
@@ -117,7 +119,7 @@ int main()
         }
 
         /* Check if we need to send a message */
-        if (send == TRUE)
+        if ((send == TRUE) & (time==2))
         {
             /* Build the payload */
             DISCOVERY_build_payload(&payload, MODE_MAGNET, &data);
@@ -138,13 +140,15 @@ int main()
 
             /* Clear send flag */
             send = FALSE;
+            
+            time = 0;
         }
 
         /* Check if all interrupt have been clear */
         if (pending_interrupt == 0)
         {
             /* Wait for Interrupt */
-            SENSIT_API_sleep(FALSE);
+            SENSIT_API_sleep(10);
         }
     } /* End of while */
 }
